@@ -44,8 +44,8 @@ ui <- shinydashboard::dashboardPage(
       # Try different approaches for the image
       # # Option 1: Standard approach (what you have)
       img(
-        src = "adopt-ipm_logo-clean.png",
-        #src = "test.png",
+        #src = "adopt-ipm_logo-clean.png",
+        src = "test.png",
         height = "50px",
         width = "auto",
         style = "margin-bottom: 5px;",
