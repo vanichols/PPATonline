@@ -432,10 +432,18 @@ server <- function(input, output, session) {
   plot1_to_display <- reactiveVal(NULL)
   plot2_to_display <- reactiveVal(NULL)
   
+  # Create reactive values to store the utility and confidence values for each pkg
+  util1_to_display <- reactiveVal(NULL)
+  conf1_to_display <- reactiveVal(NULL)
+  
+  util2_to_display <- reactiveVal(NULL)
+  conf2_to_display <- reactiveVal(NULL)
+  
+  
   observeEvent(input$create_plots_btn, {
     showNotification("Creating figures...", type = "message")
     
-    # Prepare data for plots 
+    # Prepare data 
     plotdata <- 
       values1$data |>
       bind_rows(values2$data) |> 
@@ -446,14 +454,27 @@ server <- function(input, output, session) {
              confidence_text = Confidence)
     
     
-    utility <- fxn_Calc_Overall_Utility(data = plotdata, nsim = 1000)
+    theutility <- fxn_Calc_Overall_Utility(data = plotdata, nsim = 1000)
     
     # Generate both plots and store them in the reactive values
     generated_plot1 <- fxn_Make_Plots(data = plotdata, betas = data_betas)
-    generated_plot2 <- fxn_Make_Overall_Utility_Fig(data = utility, betas = data_betas)
+    generated_plot2 <- fxn_Make_Overall_Utility_Fig(data = theutility, betas = data_betas)
     
     plot1_to_display(generated_plot1)
     plot2_to_display(generated_plot2)
+    
+    # Get values and store them in the reactive values
+    util1 <- round(theutility$utility[1], 2)
+    util2 <- round(theutility$utility[2], 2)
+    
+    conf1 <- theutility$conf[1]
+    conf2 <- theutility$conf[2]
+    
+    util1_to_display(util1)
+    util2_to_display(util2)
+    
+    conf1_to_display(conf1)
+    conf2_to_display(conf2)
     
     # Show the value boxes
     shinyjs::show("value_boxes_container")
@@ -473,6 +494,18 @@ server <- function(input, output, session) {
     plot2_to_display()
   })
   
+  # Render the util1 box
+  output$pkg1_utility <- renderValueBox({
+  
+    req(util1_to_display)
+      valueBox(
+        value = format(util1_to_display(), digits = 2, nsmall = 0),
+        subtitle = "Package 1 Utility",
+        icon = icon("exclamation-triangle"),
+        color = "black"
+      )
+    }
+  )
 
 }
 
