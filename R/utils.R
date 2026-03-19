@@ -17,16 +17,19 @@ fxn_Make_Plots <- function(data = data_example,
   
   metric_names <- data_example$metric[1:6]
   
-  metric_colors <- c(
-    "#c2e699",
-    "#fd8d3c",
-    "#f768a1",
-    "#fdbe85",
-    "#7a0177",
-    "#6baed6"
-  )
+  clr1 <- "#ffd74a"
+  clr2 <- "#3faf4a"
   
-  names(metric_colors) <- metric_names
+  # metric_colors <- c(
+  #   "#c2e699",
+  #   "#fd8d3c",
+  #   "#f768a1",
+  #   "#fdbe85",
+  #   "#7a0177",
+  #   "#6baed6"
+  # )
+  # 
+  # names(metric_colors) <- metric_names
   
   #--get names of approaches
   strategy_name <-
@@ -82,7 +85,7 @@ fxn_Make_Plots <- function(data = data_example,
     ggplot2::ggplot() +
     ggplot2::geom_density(
       ggplot2::aes(x = value_bin,
-                   fill = metricF),
+                   fill = title),
       bw = 0.5,
       show.legend = F
     ) +
@@ -90,7 +93,7 @@ fxn_Make_Plots <- function(data = data_example,
                       ggplot2::aes(value_bin, score/100),
                       alpha = 0.5) +
     ggplot2::facet_wrap(~metricF, labeller = label_wrap_gen(width = 20)) +
-    ggplot2::scale_fill_manual(values = unname(metric_colors)) +
+    ggplot2::scale_fill_manual(values = clr1) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
       labels = c("Unacceptable",
@@ -139,7 +142,7 @@ fxn_Make_Plots <- function(data = data_example,
     ggplot2::ggplot() +
     ggplot2::geom_density(
       ggplot2::aes(x = value_bin,
-                   fill = metricF),
+                   fill = title),
       bw = 0.5,
       show.legend = F
     ) +
@@ -147,7 +150,7 @@ fxn_Make_Plots <- function(data = data_example,
                       ggplot2::aes(value_bin, score/100),
                       alpha = 0.5) +
     ggplot2::facet_wrap(~metricF, labeller = ggplot2::label_wrap_gen(width = 20)) +
-    ggplot2::scale_fill_manual(values = unname(metric_colors)) +
+    ggplot2::scale_fill_manual(values = clr2) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
       labels = c("Unacceptable",
@@ -189,65 +192,6 @@ fxn_Make_Plots <- function(data = data_example,
       plot.subtitle = element_text(hjust = 0.5)
     )
   
-  # #--overlapping
-  # plot3 <- 
-  #   plot_data3 |>
-  #   dplyr::mutate(score = as.integer(score)) |>
-  #   tidyr::uncount(score) |>
-  #   ggplot2::ggplot(ggplot2::aes(x = value_bin, y = metricF)) +
-  #   ggridges::geom_density_ridges2(
-  #     ggplot2::aes(fill = title),
-  #     alpha = 0.6,
-  #     bandwidth = 0.5,
-  #     scale = 0.9 #--height of distributions
-  #   ) +
-  #   ggplot2::scale_fill_manual(
-  #     values = c("gray10", "#ffffcc"),
-  #     #values = c("#fdbe85", "#08519c"),
-  #     guide = guide_legend(ncol = 2)
-  #   ) +
-  #   ggplot2::scale_x_continuous(
-  #     breaks = c(1, 2, 3, 4, 5),
-  #     labels = c(
-  #       "Unacceptable",
-  #       "Disuaded",
-  #       "Is a consideration",
-  #       "Acceptable",
-  #       "Highly acceptable"
-  #     )
-  #   ) +
-  #   ggplot2::labs(
-  #     title = "Performance",
-  #     y = NULL,
-  #     fill = NULL,
-  #     x = NULL
-  #   ) +
-  #   # Theme
-  #   ggplot2::theme_minimal() +
-  #   ggplot2::theme(
-  #     legend.title = element_blank(),
-  #     legend.position = "top",
-  #     legend.justification = "center",
-  #     legend.box = "horizontal",
-  #     legend.key = element_blank(),
-  #     legend.box.margin = margin(),
-  #     legend.margin = margin(),
-  #     plot.title.position = "plot",
-  #     plot.caption.position = "plot",
-  #     plot.caption = element_text(hjust = 0),
-  #     legend.location = "plot",
-  #     #--get rid of minor gridlines
-  #     panel.grid.minor = element_blank(),
-  #     #--ratings text
-  #     axis.text.x = element_text(
-  #       angle = 45,
-  #       hjust = 1,
-  #       vjust = 1
-  #     ),
-  #     plot.title = element_text(hjust = 0.5, face = "bold"),
-  #     plot.subtitle = element_text(hjust = 0.5)
-  #   )
-  
   #--overlapping alternative
   plot3a <- 
     plot_data3 |>
@@ -258,12 +202,12 @@ fxn_Make_Plots <- function(data = data_example,
       ggplot2::aes(x = value_bin,
                    fill = title),
       bw = 0.5,
-      alpha = 0.6,
+      alpha = 0.8,
       #show.legend = F
     ) +
     ggplot2::facet_wrap(~metricF, labeller = ggplot2::label_wrap_gen(width = 20)) +
     ggplot2::scale_fill_manual(
-      values = c("gray10", "#ffffcc"),
+      values = c(clr1, clr2),
       #values = c("#fdbe85", "#08519c"),
       guide = guide_legend(ncol = 1)
     ) +
@@ -304,7 +248,7 @@ fxn_Make_Plots <- function(data = data_example,
       legend.location = "plot",
       #--get rid of minor gridlines
       panel.grid.minor = element_blank(),
-      plot.background = element_rect(color = "black", fill = "white", linewidth = 1),
+      plot.background = element_rect(color = "black", fill = "white", linewidth = 2),
       #--ratings text
       axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
       plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -524,6 +468,10 @@ fxn_Calc_Overall_Utility <- function(data = data_example,
 
 fxn_Make_Overall_Utility_Fig <- function(data_utility = data_example_utility,
                                  betas = data_betas) {
+  
+  clr1 <- "#ffd74a"
+  clr2 <- "#3faf4a"
+  
   plot_data <- 
     data_utility |>
     mutate(rating_numeric = round(utility, 0)) |>
@@ -542,11 +490,11 @@ fxn_Make_Overall_Utility_Fig <- function(data_utility = data_example_utility,
       ggplot2::aes(x = value_bin,
                    fill = title),
       bw = 0.5,
-      alpha = 0.6,
+      alpha = 0.8,
       #show.legend = F
     ) +
     ggplot2::scale_fill_manual(
-      values = c("gray10", "#ffffcc"),
+      values = c(clr1, clr2),
       #values = c("#fdbe85", "#08519c"),
       guide = guide_legend(ncol = 1)
     ) +
@@ -587,7 +535,7 @@ fxn_Make_Overall_Utility_Fig <- function(data_utility = data_example_utility,
       legend.location = "plot",
       #--get rid of minor gridlines
       panel.grid.minor = element_blank(),
-      plot.background = element_rect(color = "black", fill = "white", linewidth = 1),
+      plot.background = element_rect(color = "black", fill = "white", linewidth = 2),
       #--ratings text
       axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
       plot.title = element_text(hjust = 0.5, face = "bold"),

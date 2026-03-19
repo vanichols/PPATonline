@@ -67,8 +67,7 @@ d4 <-
     rating == "neutral value" ~ 3,
     rating == "low value" ~ 2,
     rating == "very low value" ~ 1
-  )) |>
-  dplyr::select(rating, rating_numeric, everything())
+  )) 
 
 #--assign full text to confidence_text
 d5 <-
@@ -78,11 +77,27 @@ d5 <-
     confidence == "h" ~ "High",
     confidence == "m" ~ "Medium",
     confidence == "l" ~ "Low"
-  )) |> 
-  select(-confidence, -rating)
+  ))
 
 
-data_betas <- d5
+data_betas <- 
+  d5 |> 
+  select(rating_numeric, confidence_text, value_bin, score)
 
 data_betas |> 
   write_rds("data/processed/data_betas.RDS")
+
+#--make a nice figure for the PDF
+d5 %>%
+  dplyr::mutate(confidence_text2 = dplyr::case_when(
+    confidence == "vh" ~ "Very high confidence",
+    confidence == "h" ~ "High confidence",
+    confidence == "m" ~ "Medium confidence",
+    confidence == "l" ~ "Low confidence"
+  ),
+  rating = str_to_sentence(rating)) |> 
+  dplyr::mutate(ratingF = forcats::fct_inorder(rating),
+                confidenceF = forcats::fct_inorder(confidence_text2)) %>%
+  ggplot2::ggplot(ggplot2::aes(value_bin, score)) +
+  ggplot2::geom_col() +
+  ggplot2::facet_grid(confidenceF~ratingF , labeller = ggplot2::label_wrap_gen(5))

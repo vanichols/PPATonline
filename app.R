@@ -19,7 +19,6 @@ data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
 source("R/utils.R")
 
 # ui ----------------------------------------------------------------------
-
 ui <- shinydashboard::dashboardPage(
   
   ###### Header ##################################################################
@@ -30,9 +29,9 @@ ui <- shinydashboard::dashboardPage(
     ### Menu ###
     shinydashboard::sidebarMenu(
       id = "sidebar_menu",
-      menuItem("  Welcome", tabName = "welcome", icon = icon("campground")),
-      menuItem("  Data entry", tabName = "data", icon = icon("leaf")),
-      menuItem("  Resources", tabName = "resources", icon = icon("book"))
+      menuItem("  Welcome", tabName = "welcome", icon = icon("mug-hot")),
+      menuItem("  Data entry", tabName = "data", icon = icon("leaf"))
+      #menuItem("  Resources", tabName = "resources", icon = icon("book"))
     ),
     
     
@@ -72,9 +71,93 @@ ui <- shinydashboard::dashboardPage(
     )),
     
     tabItems(
+      ###### welcome tab ######
+      tabItem(
+        tabName = "welcome", 
+        fluidRow(
+          box(
+            title = "Welcome to the online version of the Package Performance Assessment Tool (PPAT)",
+            status = "primary",
+            solidHeader = TRUE,
+            width = 12,
+            
+            # Getting Started Section
+            h3(icon("cookie-bite"), "Getting Started"),
+            p(
+              "The", 
+              tags$strong("Data Entry", style = "color: #f39c12;"),
+              "tab allows users to enter qualitative ratings (1 to 5) and confidence levels for six performance categories in the",
+              tags$em("Package Performance Assessment Tool", style = "color: #8e44ad;"),
+              "and get graphical results instantly!",
+              style = "font-size: 16px; line-height: 1.8; margin-bottom: 30px;"
+            ),
+            
+            hr(style = "border-top: 1px solid #ddd; margin: 25px 0;"),
+            
+            # Accompanying Material Section
+            h3(icon("book"), "Accompanying Material"),
+            p(
+              "Download a PDF of the questionnaire to help create ratings for each metric:",
+              style = "font-size: 16px; margin-bottom: 15px;"
+            ),
+            
+            # Download button
+            downloadButton(
+              "download_questionnaire",
+              "Download Questionnaire",
+              class = "btn-info",
+              icon = icon("file-pdf"),
+              style = "margin-bottom: 25px;"
+            ),
+            
+            hr(style = "border-top: 1px solid #ddd; margin: 25px 0;"),
+            
+            # Publication Section
+            h3(icon("newspaper"), "Publication"),
+            p(
+              "Read the",
+              tags$strong("accompanying publication", style = "color: #2980b9;"),
+              "for the PPAT:",
+              style = "font-size: 16px; margin-bottom: 10px;"
+            ),
+            
+            tags$a(
+              icon("external-link-alt"),
+              " Publication in progress - Visit the project website",
+              href = "https://adopt-ipm.eu/",
+              target = "_blank",
+              class = "btn btn-default",
+              style = "background-color: #eb5e23; color: white; border: none; 
+                 font-size: 15px; padding: 10px 20px; margin-top: 10px;"
+            )
+          )
+        )
+      ), #--end welcome tab
+      
+      
       ###### Enter data tab ######
       tabItem(
         tabName = "data",
+        # Directions box at the top
+        fluidRow(
+          box(
+            title = "Instructions",
+            status = "info",
+            solidHeader = TRUE,
+            width = 12,
+            HTML("
+      <ol style='font-size: 16px; line-height: 1.8;'>
+        <li>Enter a name for <strong>Package #1</strong> in the first cell of the table below, and it will auto-populate down</li>
+        <li>Enter your value ratings and confidence levels for <strong>Package #1</strong></li>
+        <li>Do the same for <strong>Package #2</strong></li>
+        <li>Once all data is entered, the <strong>'Create Visuals'</strong> button will activate</li>
+        <li>Click the <strong>'Create Visuals'</strong> button to generate performance visuals</li>
+        <li>Compare <strong>utility</strong> and <strong>confidence</strong> metrics between packages</li>
+        <li><strong>Download</strong> the visuals if you wish</li>
+      </ol>
+    ")
+          )
+        ),
         fluidRow(
           box(
             title = "Package #1",
@@ -95,20 +178,20 @@ ui <- shinydashboard::dashboardPage(
         ),
         fluidRow(
           box(
-            status = "primary",
+            status = "info",
             width = 12,
-            height = "150px",
-            
+            height = "100px",
+            #style = "background-color: #eb5e23;",  # Change to your desired color
             # Center using column offset
             column(
               width = 12,
               align = "center",
-              style = "margin-top: 30px;",
+              style = "margin-top: 20px;",
               actionButton(
                 inputId = "create_plots_btn",
                 label = "Create Visuals",
                 class = "btn-primary btn-lg",  # btn-lg makes it larger
-                style = "font-size: 24px; padding: 20px 50px;"
+                style = "font-size: 20px; padding: 20px 50px;"
               )
             )
           )
@@ -122,7 +205,7 @@ ui <- shinydashboard::dashboardPage(
             height = "500px",
             plotOutput("sys_plot", height = "400px")
           )
-          ),
+        ),
         fluidRow(
           box(
             title = "Performance summary",
@@ -146,17 +229,32 @@ ui <- shinydashboard::dashboardPage(
                 fluidRow(
                   column(6, valueBoxOutput("pkg2_utility", width = 12)),
                   column(6, valueBoxOutput("pkg2_confidence", width = 12))
+                ),
+                fluidRow(
+                  column(
+                    12, 
+                    align = "center",
+                    style = "margin-top: 20px;",  # Add some spacing above the button
+                    downloadButton(
+                      "download_plots",
+                      "Download Plots",
+                      class = "btn-primary",
+                      icon = icon("download")
+                    )
+                  )
                 )
               )
             )
           )
         )
-        
-        
-      ) #--end data tab
+      ), #--end data tab
+      
+      
+      ###### Resources tab ######
+      tabItem(tabName = "resources", ) #--end resources tab
       
     ) #--end tabItems
-  
+    
   ) #--end dashboard body
 )
 
@@ -393,10 +491,14 @@ server <- function(input, output, session) {
              package_filled_2 & rating_filled_2 & confidence_filled_2)
   })
   
+  # Initially disable the download button
+  shinyjs::disable("download_plots")
+  
   # Enable/disable button based on table completion
   observe({
     if (table_complete()) {
       shinyjs::enable("create_plots_btn")
+      
     } else {
       shinyjs::disable("create_plots_btn")
     }
@@ -478,6 +580,7 @@ server <- function(input, output, session) {
     
     # Show the value boxes
     shinyjs::show("value_boxes_container")
+    shinyjs::enable("download_plots")
     
     showNotification("Figures created!", type = "message", duration = 3)
   })
@@ -494,19 +597,83 @@ server <- function(input, output, session) {
     plot2_to_display()
   })
   
-  # Render the util1 box
+  # Render the util boxes
   output$pkg1_utility <- renderValueBox({
   
     req(util1_to_display)
       valueBox(
         value = format(util1_to_display(), digits = 2, nsmall = 0),
         subtitle = "Package 1 Utility",
-        icon = icon("exclamation-triangle"),
-        color = "black"
+        icon = icon("hammer"),
+        color = "yellow"
+      )
+    })
+  
+  output$pkg2_utility <- renderValueBox({
+    
+    req(util2_to_display)
+    valueBox(
+      value = format(util2_to_display(), digits = 2, nsmall = 0),
+      subtitle = "Package 2 Utility",
+      icon = icon("wrench"),
+      color = "green"
+    )
+  })
+  # Render the util boxes
+  output$pkg1_confidence <- renderValueBox({
+    
+    req(conf1_to_display)
+    valueBox(
+      value = conf1_to_display(),
+      subtitle = "Package 1 confidence",
+      icon = icon("gauge-simple-high"),
+      color = "yellow"
+    )
+  })
+  
+  output$pkg2_confidence <- renderValueBox({
+    
+    req(conf2_to_display)
+    valueBox(
+      value = conf2_to_display(), 
+      subtitle = "Package 2 Confidence",
+      icon = icon("gauge-simple"),
+      color = "green"
+    )
+  })
+  
+  # Your download handler
+  output$download_plots <- downloadHandler(
+    filename = function() {
+      paste0("ppat_plots_",
+             "_",
+             Sys.Date(),
+             ".png")
+    },
+    content = function(file) {
+      req(plot1_to_display()) 
+      
+      p <- plot1_to_display()
+      
+      #--Explicitly add a white background
+      p <- p + theme(
+        plot.background = element_rect(fill = "white", color = NA),
+        panel.background = element_rect(fill = "white", color = NA)
+      )
+      
+      # Save the plot
+      ggsave(
+        file,
+        plot = p,
+        device = "png",
+        width = 10,
+        height = 8,
+        dpi = 300,
+        bg = "white"
       )
     }
   )
-
+  
 }
 
 # run app -----------------------------------------------------------------

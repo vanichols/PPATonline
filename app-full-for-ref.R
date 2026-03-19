@@ -206,7 +206,7 @@ ui <- shinydashboard::dashboardPage(
             )
           )
         )
-      ))
+      )) #--end resources tab
     )
   )
 )
