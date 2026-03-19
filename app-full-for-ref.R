@@ -1,5 +1,4 @@
 library(shiny)
-library(shinyjs)
 library(rhandsontable)
 library(shinydashboard)
 library(tidyverse)
@@ -20,7 +19,6 @@ source("R/utils.R")
 # ui ----------------------------------------------------------------------
 
 ui <- shinydashboard::dashboardPage(
-  
   ###### Header ##################################################################
   shinydashboard::dashboardHeader(title = "PPATonline"),
   
@@ -32,6 +30,7 @@ ui <- shinydashboard::dashboardPage(
       menuItem("  Welcome", tabName = "welcome", icon = icon("campground")),
       menuItem("  Data entry", tabName = "data", icon = icon("leaf")),
       menuItem("  Resources", tabName = "resources", icon = icon("book"))
+      # FIXED: Removed trailing comma after last menuItem
     ),
     
     
@@ -61,7 +60,6 @@ ui <- shinydashboard::dashboardPage(
   
   ###### Body ####################################################################
   shinydashboard::dashboardBody(
-    useShinyjs(),
     tags$head(tags$style(
       HTML("
         .content-wrapper, .right-side {
@@ -71,6 +69,33 @@ ui <- shinydashboard::dashboardPage(
     )),
     
     tabItems(
+      ###### Welcome tab ######
+      tabItem(tabName = "welcome", fluidRow(
+        box(
+          title = "Welcome to the online version of the Package Performance Assessment Tool (PPAT)",
+          status = "primary",
+          solidHeader = TRUE,
+          width = 12,
+          
+          h3("Getting Started", icon("person-walking")),
+          p(
+            "Welcome to our dashboard! Below are directions and some useful resources:",
+            style = "font-size: 16px; margin-bottom: 20px;"
+          ),
+          
+          h4("Directions", style = "color: #2c3e50; margin-top: 25px;"),
+          tags$ul(
+            style = "line-height: 1.8; font-size: 15px;",
+            tags$li(
+              tags$strong("Data entry", style = "color: #f39c12;"),
+              " tab allows users to enter qualitative ratings (1 to 5) and confidence levels regarding XX categories",
+              tags$em("Pxx Pxx Assessment Tool", style = "color: #8e44ad;"),
+              " and get graphical results instantly!"
+            )
+          )
+        )
+      )),
+      
       ###### Enter data tab ######
       tabItem(
         tabName = "data",
@@ -138,13 +163,53 @@ ui <- shinydashboard::dashboardPage(
             plotOutput("sys2_plot", height = "400px")
           )
         )
-      ) #--end data tab
+      ),
       
-    ) #--end tabItems
-  
-  ) #--end dashboard body
+      ###### Resources tab ######
+      tabItem(tabName = "resources", fluidRow(
+        box(
+          title = "Accompanying material",
+          status = "primary",
+          solidHeader = TRUE,
+          width = 12,
+          
+          h3("xxx", icon("heart")),
+          p(
+            "Below are downloadable PDFs of the questionaires to help users create ratings for each metric",
+            style = "font-size: 16px; margin-bottom: 20px;"
+          )
+        ),
+        box(
+          title = "Literature",
+          status = "primary",
+          solidHeader = TRUE,
+          width = 12,
+          
+          p(
+            "Below are resources that help give context to this tool:",
+            style = "font-size: 16px; margin-bottom: 20px;"
+          ),
+          
+          tags$ul(
+            style = "line-height: 2; font-size: 15px;",
+            tags$li(
+              "Read the ",
+              tags$strong("accompanying publication", style = "color: #2980b9;"),
+              " for the PPAT: ",
+              tags$a(
+                "Publication in progress, here is the project website",
+                href = "https://adopt-ipm.eu/",
+                target = "_blank",
+                style = "color: #eb5e23; text-decoration: none; font-weight: bold;
+                          border-bottom: 1px dotted #27ae60;"
+              )
+            )
+          )
+        )
+      ))
+    )
+  )
 )
-
 # server ------------------------------------------------------------------
 
 
@@ -251,23 +316,23 @@ server <- function(input, output, session) {
     return(package_filled & rating_filled & confidence_filled)
   })
   
-  # Enable/disable button based on table completion
-  observe({
+  # Conditional UI for the button
+  output$create_plots_btn <- renderUI({
     if (table_complete()) {
-      shinyjs::enable("create_plots_btn")
-    } else {
-      shinyjs::disable("create_plots_btn")
+      actionButton("create_plots_btn", "Create Visuals", 
+                   class = "btn-success", 
+                   style = "margin-top: 15px;")
     }
   })
   
-  # Handle button click - FIXED ID
-  observeEvent(input$create_plots_btn, {
+  # Handle button click
+  observeEvent(input$create_plot1, {
+    # Your figure creation logic here
     showNotification("Creating figure...", type = "message")
     
-    # Your figure creation logic here
-    # You can access the complete data with values1$data
+    # Example: You can access the complete data with values1$data
+    # and create your figure here
   })
-  
   
 }
 
