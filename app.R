@@ -13,6 +13,7 @@ library(patchwork)
 
 data_betas <- read_rds("data/processed/data_betas.RDS")
 data_example <- read_rds("data/processed/data_example.RDS")
+data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
 
 # Source utility functions (results plots)
 source("R/utils.R")
@@ -114,7 +115,7 @@ ui <- shinydashboard::dashboardPage(
         ),
         fluidRow(
           box(
-            title = "Individual package visuals",
+            title = "Performance visuals",
             status = "primary",
             solidHeader = TRUE,
             width = 12,
@@ -124,13 +125,31 @@ ui <- shinydashboard::dashboardPage(
           ),
         fluidRow(
           box(
-            title = "Overlapping Visual",
+            title = "Performance summary",
             status = "primary",
             solidHeader = TRUE,
             width = 12,
-            height = "500px",
-            plotOutput("overlapping_plot", height = "400px")
-          )  
+            fluidRow(
+              # Left side: plot
+              column(
+                width = 6,
+                plotOutput("summary_plot", height = "400px")
+              ),
+              # Right side: 2x2 grid of value boxes
+              column(
+                id = "value_boxes_container",  # Add ID for shinyjs
+                width = 6,
+                fluidRow(
+                  column(6, valueBoxOutput("pkg1_utility", width = 12)),
+                  column(6, valueBoxOutput("pkg1_confidence", width = 12))
+                ),
+                fluidRow(
+                  column(6, valueBoxOutput("pkg2_utility", width = 12)),
+                  column(6, valueBoxOutput("pkg2_confidence", width = 12))
+                )
+              )
+            )
+          )
         )
         
         
@@ -175,6 +194,11 @@ dummy2 <-
 
 server <- function(input, output, session) {
   
+  # Initially hide the value boxes
+  observe({
+    shinyjs::hide("value_boxes_container")
+  })
+  
   # Get user input Package #1
   values1 <- reactiveValues()
   
@@ -186,7 +210,7 @@ server <- function(input, output, session) {
         Metric = c("Crop losses", 
                    "Direct costs", 
                    "Environmental impact",
-                   "Health and safety",
+                   "User health and safety",
                    "Time/management", 
                    "Third party coordination requirements"),
         Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
@@ -273,7 +297,7 @@ server <- function(input, output, session) {
         Metric = c("Crop losses", 
                    "Direct costs", 
                    "Environmental impact",
-                   "Health and safety",
+                   "User health and safety",
                    "Time/management", 
                    "Third party coordination requirements"),
         Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
@@ -350,16 +374,23 @@ server <- function(input, output, session) {
   
   # Check if all required cells are filled
   table_complete <- reactive({
-    if (is.null(values1$data)) return(FALSE)
+    if (is.null(values1$data) || is.null(values2$data)) return(FALSE)
     
-    data <- values1$data
+    # Check values1$data
+    data1 <- values1$data
+    package_filled_1 <- all(!is.na(data1$PackageTitle) & data1$PackageTitle != "")
+    rating_filled_1 <- all(!is.na(data1$Rating) & data1$Rating != "")
+    confidence_filled_1 <- all(!is.na(data1$Confidence) & data1$Confidence != "")
     
-    # Check if all required columns have non-empty values
-    package_filled <- all(!is.na(data$PackageTitle) & data$PackageTitle != "")
-    rating_filled <- all(!is.na(data$Rating) & data$Rating != "")
-    confidence_filled <- all(!is.na(data$Confidence) & data$Confidence != "")
+    # Check values2$data
+    data2 <- values2$data
+    package_filled_2 <- all(!is.na(data2$PackageTitle) & data2$PackageTitle != "")
+    rating_filled_2 <- all(!is.na(data2$Rating) & data2$Rating != "")
+    confidence_filled_2 <- all(!is.na(data2$Confidence) & data2$Confidence != "")
     
-    return(package_filled & rating_filled & confidence_filled)
+    # Return TRUE only if both tables are complete
+    return(package_filled_1 & rating_filled_1 & confidence_filled_1 &
+             package_filled_2 & rating_filled_2 & confidence_filled_2)
   })
   
   # Enable/disable button based on table completion
@@ -372,35 +403,77 @@ server <- function(input, output, session) {
   })
   
 
-  # Create a reactive value to store the plot
-  plot_to_display <- reactiveVal(NULL)
+  # # Create a reactive value to store the plot
+  # plot_to_display <- reactiveVal(NULL)
+  # 
+  # observeEvent(input$create_plots_btn, {
+  #   showNotification("Creating figure...", type = "message")
+  #   
+  #   plotdata <- 
+  #     values1$data |>
+  #     bind_rows(values2$data) |>
+  #     mutate(rating_numeric = as.numeric(str_sub(Rating, 1, 1))) |> 
+  #     rename(title = PackageTitle,
+  #            metric = Metric,
+  #            weight = Weight,
+  #            confidence_text = Confidence)
+  #   
+  #   # Generate the plot and store it in the reactive value
+  #   generated_plot <- fxn_Make_Plots(data = plotdata, betas = data_betas)
+  #   plot_to_display(generated_plot)
+  #   
+  #   # Show the value boxes
+  #   shinyjs::show("value_boxes_container")
+  #   
+  #   showNotification("Figure created!", type = "message", duration = 3)
+  # })
   
-  # Handle button click
+  # Create reactive values to store both plots
+  plot1_to_display <- reactiveVal(NULL)
+  plot2_to_display <- reactiveVal(NULL)
+  
   observeEvent(input$create_plots_btn, {
-    showNotification("Creating figure...", type = "message")
+    showNotification("Creating figures...", type = "message")
     
+    # Prepare data for plots 
     plotdata <- 
       values1$data |>
-      bind_rows(values2$data) |>
+      bind_rows(values2$data) |> 
       mutate(rating_numeric = as.numeric(str_sub(Rating, 1, 1))) |> 
       rename(title = PackageTitle,
              metric = Metric,
              weight = Weight,
              confidence_text = Confidence)
     
-    # Generate the plot and store it in the reactive value
-    generated_plot <- fxn_Make_Paired_Ridge_Plots(data = plotdata, betas = data_betas)
-    plot_to_display(generated_plot)
     
-    showNotification("Figure created!", type = "message", duration = 3)
+    utility <- fxn_Calc_Overall_Utility(data = plotdata, nsim = 1000)
+    
+    # Generate both plots and store them in the reactive values
+    generated_plot1 <- fxn_Make_Plots(data = plotdata, betas = data_betas)
+    generated_plot2 <- fxn_Make_Overall_Utility_Fig(data = utility, betas = data_betas)
+    
+    plot1_to_display(generated_plot1)
+    plot2_to_display(generated_plot2)
+    
+    # Show the value boxes
+    shinyjs::show("value_boxes_container")
+    
+    showNotification("Figures created!", type = "message", duration = 3)
   })
   
   # Render the plot for display in the UI
   output$sys_plot <- renderPlot({
-    req(plot_to_display())  # Only render if plot exists
-    plot_to_display()
+    req(plot1_to_display())  # Only render if plot exists
+    plot1_to_display()
   })
   
+  # Render the plot for display in the UI
+  output$summary_plot <- renderPlot({
+    req(plot2_to_display())  # Only render if plot exists
+    plot2_to_display()
+  })
+  
+
 }
 
 # run app -----------------------------------------------------------------

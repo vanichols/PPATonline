@@ -14,7 +14,7 @@ d2 <-
   tidyr::fill(title) |>
   dplyr::mutate(weight = as.numeric(weight),
                 rating_numeric = rating_1to5) |>
-  dplyr::select(-notes, -pesticide_load, -rating_1to5)
+  dplyr::select(-rating_1to5)
 
 #--change to confidence_text
 d3 <- 
@@ -26,6 +26,7 @@ d3 <-
     confidence == "l" ~ "Low"
   )) |> 
   select(-confidence)
+
 
 data_example <- d3
 
