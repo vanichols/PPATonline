@@ -86,9 +86,7 @@ ui <- shinydashboard::dashboardPage(
             p(
               "The", 
               tags$strong("Data Entry", style = "color: #f39c12;"),
-              "tab allows users to enter qualitative ratings (1 to 5) and confidence levels for six performance categories in the",
-              tags$em("Package Performance Assessment Tool", style = "color: #8e44ad;"),
-              "and get graphical results instantly!",
+              "tab allows users to enter qualitative ratings (1 to 5) and confidence levels for six performance categories and get visual results instantly!",
               style = "font-size: 16px; line-height: 1.8; margin-bottom: 30px;"
             ),
             
@@ -666,7 +664,7 @@ server <- function(input, output, session) {
         file,
         plot = p,
         device = "png",
-        width = 10,
+        width = 15,
         height = 8,
         dpi = 300,
         bg = "white"
