@@ -60,7 +60,7 @@ fxn_Make_Paired_Ridge_Plots <- function(data = data_example,
         metric == metric_names[6] ~ metric_names_nice[6]),
       metricF = factor(metric2, levels = (metric_names_nice))) |>
     dplyr::left_join(betas,
-                     by = c("rating_numeric", "confidence"),
+                     by = c("rating_numeric", "confidence_text"),
                      relationship = "many-to-many") |>
     #--make some things for the figure
     dplyr::arrange(metricF) |>
@@ -89,7 +89,7 @@ fxn_Make_Paired_Ridge_Plots <- function(data = data_example,
       metricF = factor(metric2, levels = (metric_names_nice))) |>
     #--join with confidence bins - FIXED: added 'by' argument
     dplyr::left_join(betas,
-                     by = c("rating_numeric", "confidence"),
+                     by = c("rating_numeric", "confidence_text"),
                      relationship = "many-to-many") |>
     #--make some things for the figure
     dplyr::arrange(metricF) |>

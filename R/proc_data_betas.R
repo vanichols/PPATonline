@@ -70,7 +70,19 @@ d4 <-
   )) |>
   dplyr::select(rating, rating_numeric, everything())
 
-data_betas <- d4
+#--assign full text to confidence_text
+d5 <-
+  d4 |>
+  dplyr::mutate(confidence_text = dplyr::case_when(
+    confidence == "vh" ~ "Very high",
+    confidence == "h" ~ "High",
+    confidence == "m" ~ "Medium",
+    confidence == "l" ~ "Low"
+  )) |> 
+  select(-confidence, -rating)
+
+
+data_betas <- d5
 
 data_betas |> 
   write_rds("data/processed/data_betas.RDS")
