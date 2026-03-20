@@ -1,0 +1,12 @@
+name: PPATonline
+title: PPATonline
+username: agro-nichols
+account: agro-nichols
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16945718
+bundleId: 11735569
+url: https://agro-nichols.shinyapps.io/PPATonline/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

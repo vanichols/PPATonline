@@ -35,9 +35,9 @@ d2 <-
 d2 %>%
   dplyr::mutate(ratingF = forcats::fct_inorder(rating),
                 confidenceF = forcats::fct_inorder(confidence)) %>%
-  ggplot2::ggplot(ggplot2::aes(value_bin, score)) +
-  ggplot2::geom_col() +
-  ggplot2::facet_grid(ratingF ~confidenceF)
+  ggplot(aes(value_bin, score)) +
+  geom_col() +
+  facet_grid(ratingF ~confidenceF)
 
 #--rename the ratings
 d3 <-
@@ -54,9 +54,9 @@ d3 <-
 d3 %>%
   dplyr::mutate(ratingF = forcats::fct_inorder(rating),
                 confidenceF = forcats::fct_inorder(confidence)) %>%
-  ggplot2::ggplot(ggplot2::aes(value_bin, score)) +
-  ggplot2::geom_col() +
-  ggplot2::facet_grid(confidenceF~ratingF , labeller = ggplot2::label_wrap_gen(5))
+  ggplot(aes(value_bin, score)) +
+  geom_col() +
+  facet_grid(confidenceF~ratingF , labeller = label_wrap_gen(5))
 
 #--assign numeric values to ratings
 d4 <-
@@ -87,8 +87,29 @@ data_betas <-
 data_betas |> 
   write_rds("data/processed/data_betas.RDS")
 
+
+# figure ------------------------------------------------------------------
+
+
 #--make a nice figure for the PDF
-d5 %>%
+
+value_colors <- c(
+  "1" = "#270B55",
+  "2" = "#65156E",
+  "3" = "#9F2963",
+  "4" = "#D44842",
+  "5" = "#F9C126"
+)
+
+plot_data <- 
+  d5 %>%
+  mutate(rating2 = case_when(
+    rating == "very low value" ~ "1 - Not acceptable",
+    rating == "low value" ~ "2 - Likely to dissuade from use",
+    rating == "neutral value" ~ "3 - Will be a consideration in decision to use", 
+    rating == "high value" ~ "4- Acceptable",
+    rating == "very high value" ~ "5 - Highly acceptable or improved")
+    ) |> 
   dplyr::mutate(confidence_text2 = dplyr::case_when(
     confidence == "vh" ~ "Very high confidence",
     confidence == "h" ~ "High confidence",
@@ -96,8 +117,50 @@ d5 %>%
     confidence == "l" ~ "Low confidence"
   ),
   rating = str_to_sentence(rating)) |> 
-  dplyr::mutate(ratingF = forcats::fct_inorder(rating),
-                confidenceF = forcats::fct_inorder(confidence_text2)) %>%
-  ggplot2::ggplot(ggplot2::aes(value_bin, score)) +
-  ggplot2::geom_col() +
-  ggplot2::facet_grid(confidenceF~ratingF , labeller = ggplot2::label_wrap_gen(5))
+  dplyr::mutate(ratingF = fct_inorder(rating2),
+                ratingF = fct_rev(ratingF),
+                confidenceF = factor(confidence_text2, levels = c("Low confidence",
+                                                                            "Medium confidence",
+                                                                            "High confidence",
+                                                                            "Very high confidence")),
+                confidenceF = fct_rev(confidenceF),
+                value_binF = fct_inorder(as.character(value_bin)),
+                value_binF = fct_rev(value_binF)) 
+
+
+plot_data %>%
+  ggplot(aes(value_binF, score)) +
+  geom_col(aes(fill = value_binF), color = "black", show.legend = FALSE) +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_manual(values = value_colors) +
+  labs(x = "Value bin (higher value indicates more value)",
+       y = "Density of value (1-100)") +
+  facet_grid(confidenceF~ratingF , labeller = label_wrap_gen(15)) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    # legend.position = "top",
+    # legend.justification = "center",
+    legend.position = c(0.05, 0.95),  # x=5% from left, y=95% from bottom
+    legend.justification = c("left", "top"), # anchor legend box
+    legend.box = "horizontal",
+    legend.key = element_blank(),
+    legend.box.margin = margin(),
+    legend.margin = margin(),
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.caption = element_text(hjust = 0),
+    legend.location = "plot",
+    #--get rid of minor gridlines
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(color = "black", fill = "white", linewidth = 2),
+    #--ratings text
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.text = element_text(color = "gray"),
+    strip.text.x = element_text(size = rel(1.2)),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+ggsave("www/rating-confidence-pairs.pdf", width = 8, height = 6)
+ggsave("www/rating-confidence-pairs.png", width = 8, height = 6)

@@ -175,22 +175,15 @@ ui <- shinydashboard::dashboardPage(
           )
         ),
         fluidRow(
-          box(
-            status = "info",
+          column(
             width = 12,
-            height = "100px",
-            #style = "background-color: #eb5e23;",  # Change to your desired color
-            # Center using column offset
-            column(
-              width = 12,
-              align = "center",
-              style = "margin-top: 20px;",
-              actionButton(
-                inputId = "create_plots_btn",
-                label = "Create Visuals",
-                class = "btn-primary btn-lg",  # btn-lg makes it larger
-                style = "font-size: 20px; padding: 20px 50px;"
-              )
+            align = "center",
+            style = "margin-top: 20px; margin-bottom: 20px;",
+            actionButton(
+              inputId = "create_plots_btn",
+              label = "Create Visuals",
+              class = "btn-lg",
+              style = "font-size: 20px; padding: 20px 50px; background-color: #eb5e23; border-color: black;"
             )
           )
         ),
@@ -289,6 +282,15 @@ dummy2 <-
   )
 
 server <- function(input, output, session) {
+  
+  output$download_questionnaire <- downloadHandler(
+    filename = function() {
+      "questionnaire.pdf"
+    },
+    content = function(file) {
+      file.copy("www/questionnaire.pdf", file)
+    }
+  )
   
   # Initially hide the value boxes
   observe({
