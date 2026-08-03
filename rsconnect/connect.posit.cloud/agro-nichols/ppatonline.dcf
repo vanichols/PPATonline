@@ -1,0 +1,12 @@
+name: ppatonline
+title: PPATonline
+username: agro-nichols
+account: agro-nichols
+server: connect.posit.cloud
+hostUrl: https://api.connect.posit.cloud/v1
+appId: 019fc7da-5965-c6ab-b63a-f68175186933
+bundleId:
+url:
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
