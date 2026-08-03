@@ -627,7 +627,7 @@ server <- function(input, output, session) {
     req(conf1_to_display)
     valueBox(
       value = conf1_to_display(),
-      subtitle = "Package 1 confidence",
+      subtitle = "Package 1 Utility Confidence",
       icon = icon("gauge-simple-high"),
       color = "yellow"
     )
@@ -638,7 +638,7 @@ server <- function(input, output, session) {
     req(conf2_to_display)
     valueBox(
       value = conf2_to_display(), 
-      subtitle = "Package 2 Confidence",
+      subtitle = "Package 2 Utility Confidence",
       icon = icon("gauge-simple"),
       color = "green"
     )
