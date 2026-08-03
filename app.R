@@ -9,6 +9,8 @@ library(ggrepel)
 library(scales)
 library(patchwork)
 
+#rsconnect::writeManifest()
+
 # global ------------------------------------------------------------------
 
 data_betas <- read_rds("data/processed/data_betas.RDS")

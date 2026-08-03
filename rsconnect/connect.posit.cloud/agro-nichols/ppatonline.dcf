@@ -6,7 +6,7 @@ server: connect.posit.cloud
 hostUrl: https://api.connect.posit.cloud/v1
 appId: 019fc7da-5965-c6ab-b63a-f68175186933
 bundleId:
-url:
+url: https://connect.posit.cloud/agro-nichols/content/019fc7da-5965-c6ab-b63a-f68175186933
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
