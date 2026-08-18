@@ -45,8 +45,10 @@ ui <- shinydashboard::dashboardPage(
                font-size: 12px;
                color: #888;
                z-index: 1000;",
+      # # Option 1: Standard approach (what you have)
       img(
-        src = "test.png",
+        src = "adopt-ipm_logo-clean.png",
+        #src = "test.png",
         height = "50px",
         width = "auto",
         style = "margin-bottom: 5px;",
@@ -54,12 +56,15 @@ ui <- shinydashboard::dashboardPage(
       ),
       br(),
       HTML(
-        "<a href='https://adopt-ipm.eu/' target='_blank'>adopt-ipm.eu</a><br>
-         ADOPT-IPM team (2026)<br>
-         Last updated: March 2026<br>"
+        paste0(
+          "<a href='https://adopt-ipm.eu/' target='_blank'>adopt-ipm.eu</a><br>",
+          "Nichols et al. (2026)<br>",
+          "Last updated: ", tools::toTitleCase(format(Sys.Date(), "%B %Y")), "<br>"
+        )
       )
     )
   ),
+  
   
   ###### Body ####################################################################
   shinydashboard::dashboardBody(
@@ -148,7 +153,7 @@ ui <- shinydashboard::dashboardPage(
             HTML("
       <ol style='font-size: 16px; line-height: 1.8;'>
         <li>Enter a name for <strong>Package #1</strong> in the first cell of the table below, and it will auto-populate down</li>
-        <li>Enter your value ratings and confidence levels for <strong>Package #1</strong></li>
+        <li>Enter your value ★ ratings and confidence levels for <strong>Package #1</strong></li>
         <li>Do the same for <strong>Package #2</strong></li>
         <li>Once all data is entered, the <strong>'Create Visuals'</strong> button will activate</li>
         <li>Click the <strong>'Create Visuals'</strong> button to generate performance visuals</li>
@@ -263,7 +268,7 @@ dummy1 <-
              "Time/management",
              "Third party coordination requirements"),
   Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
-  Rating = rep("1 - Not acceptable", 6),
+  Rating = rep("1 star - Not acceptable", 6),
   Confidence = rep("Medium", 6),
   stringsAsFactors = FALSE
 )
@@ -278,7 +283,7 @@ dummy2 <-
                "Time/management",
                "Third party coordination requirements"),
     Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
-    Rating = rep("4 - Acceptable", 6),
+    Rating = rep("4 stars - Acceptable", 6),
     Confidence = rep("Very high", 6),
     stringsAsFactors = FALSE
   )
@@ -349,11 +354,11 @@ server <- function(input, output, session) {
         hot_col(
           "Rating",
           type = "dropdown",
-          source = as.character(c("1 - Not acceptable",
-                                  "2 - Likely to dissuade from use", 
-                                  "3 - Will be a consideration in decision to use", 
-                                  "4 - Acceptable",
-                                  "5 - Highly acceptable or improved")),
+          source = as.character(c("★ 1 star - Not acceptable",
+                                  "★★ 2 stars - Likely to dissuade from use", 
+                                  "★★★ 3 stars - Will be a consideration in decision to use", 
+                                  "★★★★ 4 stars - Acceptable",
+                                  "★★★★★ 5 stars - Highly acceptable or improved")),
           allowInvalid = FALSE
         ) %>%
         hot_col(
@@ -436,11 +441,11 @@ server <- function(input, output, session) {
         hot_col(
           "Rating",
           type = "dropdown",
-          source = as.character(c("1 - Not acceptable",
-                                  "2 - Likely to dissuade from use", 
-                                  "3 - Will be a consideration in decision to use", 
-                                  "4 - Acceptable",
-                                  "5 - Highly acceptable or improved")),
+          source = as.character(c("★ 1 star - Not acceptable",
+                                  "★★ 2 stars - Likely to dissuade from use", 
+                                  "★★★ 3 stars - Will be a consideration in decision to use", 
+                                  "★★★★ 4 stars - Acceptable",
+                                  "★★★★★ 5 stars - Highly acceptable or improved")),
           allowInvalid = FALSE
         ) %>%
         hot_col(
@@ -551,7 +556,9 @@ server <- function(input, output, session) {
     plotdata <- 
       values1$data |>
       bind_rows(values2$data) |> 
-      mutate(rating_numeric = as.numeric(str_sub(Rating, 1, 1))) |> 
+      mutate(
+        rating_numeric = as.numeric(str_extract(Rating, "\\d+"))
+        ) |> 
       rename(title = PackageTitle,
              metric = Metric,
              weight = Weight,
