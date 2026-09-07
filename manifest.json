@@ -652,15 +652,17 @@
         "Packaged": "2026-04-08 18:14:45 UTC; gaborcsardi",
         "Author": "Gábor Csárdi [aut, cre],\n  Hadley Wickham [ctb],\n  Kirill Müller [ctb],\n  Salim Brüggemann [ctb] (ORCID: <https://orcid.org/0000-0002-5329-5987>),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Gábor Csárdi <gabor@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-04-09 09:50:18 UTC",
-        "Built": "R 4.6.1; x86_64-w64-mingw32; 2026-07-21 01:02:02 UTC; windows",
+        "Built": "R 4.6.0; x86_64-w64-mingw32; 2026-04-23 22:39:43 UTC; windows",
         "Archs": "x64",
         "RemoteType": "standard",
-        "RemotePkgRef": "cli",
         "RemoteRef": "cli",
-        "RemoteRepos": "https://cran.rstudio.com",
-        "RemoteSha.Version": "3.6.6"
+        "RemotePkgRef": "cli",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/latest",
+        "RemoteReposName": "CRAN",
+        "RemotePkgPlatform": "x86_64-w64-mingw32",
+        "RemoteSha": "3.6.6"
       }
     },
     "clipr": {
@@ -2036,14 +2038,16 @@
         "Packaged": "2024-12-22 15:53:13 UTC; sam",
         "Author": "Sam Firke [aut, cre],\n  Bill Denney [ctb],\n  Chris Haid [ctb],\n  Ryan Knight [ctb],\n  Malte Grosser [ctb],\n  Jonathan Zadra [ctb]",
         "Maintainer": "Sam Firke <samuel.firke@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2024-12-22 16:30:01 UTC",
-        "Built": "R 4.6.1; ; 2026-07-21 03:50:53 UTC; windows",
+        "Built": "R 4.6.0; ; 2026-04-24 19:09:08 UTC; windows",
         "RemoteType": "standard",
-        "RemotePkgRef": "janitor",
         "RemoteRef": "janitor",
-        "RemoteRepos": "https://cran.rstudio.com",
-        "RemoteSha.Version": "2.2.1"
+        "RemotePkgRef": "janitor",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/latest",
+        "RemoteReposName": "CRAN",
+        "RemotePkgPlatform": "x86_64-w64-mingw32",
+        "RemoteSha": "2.2.1"
       }
     },
     "jose": {
@@ -3653,14 +3657,16 @@
         "NeedsCompilation": "no",
         "Packaged": "2023-08-27 20:30:20 UTC; malte",
         "Author": "Malte Grosser [aut, cre]",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2023-08-27 22:50:09 UTC",
-        "Built": "R 4.6.1; ; 2026-07-21 02:31:01 UTC; windows",
+        "Built": "R 4.6.0; ; 2026-04-24 18:21:26 UTC; windows",
         "RemoteType": "standard",
-        "RemotePkgRef": "snakecase",
         "RemoteRef": "snakecase",
-        "RemoteRepos": "https://cran.rstudio.com",
-        "RemoteSha.Version": "0.11.1"
+        "RemotePkgRef": "snakecase",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/latest",
+        "RemoteReposName": "CRAN",
+        "RemotePkgPlatform": "x86_64-w64-mingw32",
+        "RemoteSha": "0.11.1"
       }
     },
     "snowflakeauth": {
@@ -4547,13 +4553,13 @@
   },
   "files": {
     ".Rprofile": {
-      "checksum": "6522575cb1a4153a861b78bd823c74fb"
+      "checksum": "96a7d16d9c26b154643ccb3d8875e3fa"
     },
     "app-full-for-ref.R": {
       "checksum": "53a7b4cdf8e0a4ac7b46d2892e8b2866"
     },
     "app.R": {
-      "checksum": "8d61c2b9a584a62a84a204f9d55821a1"
+      "checksum": "f205ba83bddb11ea1eb291db1887babd"
     },
     "data/processed/data_betas.RDS": {
       "checksum": "17a43850291e36b4a5b3b45922fa9c54"
@@ -4616,13 +4622,13 @@
       "checksum": "f6593e8422d4d1883c0c58dc1d25e75b"
     },
     "R/utils.R": {
-      "checksum": "eee4289d3bdef995ca7b6d80bbb09292"
+      "checksum": "9ad0b9cf216f38f5bb6727e04d6be55e"
     },
     "renv.lock": {
       "checksum": "3585d9a733fb6b8a9cb6224dfc3d144c"
     },
     "www/adopt-ipm_logo-clean.png": {
-      "checksum": "ff718c87251f1955083ae892285e51c6"
+      "checksum": "96af08f89ce75dcac47d55eefaaf369e"
     },
     "www/Questionaire for R Shiny.docx": {
       "checksum": "b973acc76f8ff41d5f195bf536f17fb2"
@@ -4631,7 +4637,7 @@
       "checksum": "aed7fbdfe71d9865904b40c2e51ae3a5"
     },
     "www/rating-confidence-pairs.pdf": {
-      "checksum": "03a11f8bf67bb213fa6a94dfd7255649"
+      "checksum": "e7d34959f9f89b2aa0a3a0983ed3c8e3"
     },
     "www/rating-confidence-pairs.png": {
       "checksum": "5da8ccadb9069ff10a40b000ed0155df"

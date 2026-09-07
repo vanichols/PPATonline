@@ -17,7 +17,7 @@ data_betas <- read_rds("data/processed/data_betas.RDS")
 data_example <- read_rds("data/processed/data_example.RDS")
 data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
 
-g# Source utility functions (results plots)
+# Source utility functions (results plots)
 source("R/utils.R")
 
 # ui ----------------------------------------------------------------------
