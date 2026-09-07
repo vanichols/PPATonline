@@ -75,7 +75,8 @@ fxn_Make_Plots <- function(data = data_example,
     dplyr::left_join(betas,
                      by = c("rating_numeric", "confidence_text"),
                      relationship = "many-to-many") |>
-    dplyr::select(title, metricF, value_bin, score)
+    dplyr::select(title, metricF, value_bin, score) |> 
+    mutate(title = fct_inorder(title))
   
   
   #--package 1
