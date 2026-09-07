@@ -97,6 +97,7 @@ fxn_Make_Plots <- function(data = data_example,
     ggplot2::scale_fill_manual(values = clr1) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
+      limits = c(1, 5),
       labels = c("Unacceptable",
                  "Disuaded",
                  "Is a consideration",
