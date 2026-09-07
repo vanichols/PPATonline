@@ -485,6 +485,7 @@ fxn_Make_Overall_Utility_Fig <- function(data_utility = data_example_utility,
   
   plot_data |> 
     tidyr::uncount(score) |>
+    mutate(title = fct_inorder(title)) |> 
     ggplot2::ggplot() +
     ggplot2::geom_density(
       ggplot2::aes(x = value_bin,
@@ -500,6 +501,7 @@ fxn_Make_Overall_Utility_Fig <- function(data_utility = data_example_utility,
     ) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
+      limits = c(1, 5),
       labels = c("Unacceptable",
                  "Disuaded",
                  "Is a consideration",
@@ -511,6 +513,7 @@ fxn_Make_Overall_Utility_Fig <- function(data_utility = data_example_utility,
       limits = c(0, 1),
       labels = scales::label_percent(),
     ) +
+    
     ggplot2::labs(
       title = "Weighted combination of metrics",
       y = NULL,
@@ -684,6 +687,7 @@ fxn_Make_Paired_Ridge_Plots <- function(data = data_example,
     ggplot2::scale_fill_manual(values = unname(metric_colors)) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
+      limits = c(1, 5),
       labels = c("Unacceptable",
                  "Disuaded",
                  "Is a consideration",
@@ -740,6 +744,7 @@ fxn_Make_Paired_Ridge_Plots <- function(data = data_example,
     ggplot2::scale_fill_manual(values = unname(metric_colors)) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
+      limits = c(1, 5),
       labels = c("Unacceptable",
                  "Disuaded",
                  "Is a consideration",
@@ -858,6 +863,7 @@ fxn_Make_Overlapping_Ridge_Plots <- function(data = data_example, betas = data_b
     ) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
+      limits = c(1, 5),
       labels = c(
         "Unacceptable",
         "Disuaded",
