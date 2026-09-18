@@ -28,7 +28,13 @@ d3 <-
   select(-confidence)
 
 
-data_example <- d3
+#--change 'crop losses' to 'crop value'
+d4 <- 
+  d3 |> 
+  mutate(across(everything(), ~ str_replace_all(.x, "Crop losses", "Crop value")))
+  
+
+data_example <- d4
 
 data_example |> 
   saveRDS("data/processed/data_example.RDS")
