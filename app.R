@@ -102,14 +102,14 @@ ui <- shinydashboard::dashboardPage(
             # Accompanying Material Section
             h3(icon("book"), "Accompanying Material"),
             p(
-              "Download a PDF of the questionnaire to help create ratings for each metric:",
+              "Download a PDF of the category descriptions to help create ratings for each metric:",
               style = "font-size: 16px; margin-bottom: 15px;"
             ),
             
             # Download button
             downloadButton(
               "download_questionnaire",
-              "Download Questionnaire",
+              "Download category descriptions",
               class = "btn-info",
               icon = icon("file-pdf"),
               style = "margin-bottom: 25px;"
@@ -152,13 +152,12 @@ ui <- shinydashboard::dashboardPage(
             width = 12,
             HTML("
       <ol style='font-size: 16px; line-height: 1.8;'>
-        <li>Enter a name for <strong>Package #1</strong> in the first cell of the table below, and it will auto-populate down</li>
-        <li>Enter your value ★ ratings and confidence levels for <strong>Package #1</strong></li>
+        <li>Click <i class='fa fa-hand-pointer' style='color: #0066cc;'></i> in the first cell under <strong>PackageTitle</strong> and enter a name - it will auto-populate down</li>
+        <li>Enter your value ★ ratings and confidence levels
         <li>Do the same for <strong>Package #2</strong></li>
         <li>Once all data is entered, the <strong>'Create Visuals'</strong> button will activate</li>
-        <li>Click the <strong>'Create Visuals'</strong> button to generate performance visuals</li>
-        <li>Compare <strong>utility</strong> and <strong>confidence</strong> metrics between packages</li>
-        <li><strong>Download</strong> the visuals if you wish</li>
+        <li>Click <i class='fa fa-hand-pointer' style='color: #0066cc;'></i> the <strong>'Create Visuals'</strong> button to generate performance visuals</li>
+        <li><i class='fa fa-download' style='color: #28a745;'></i> <strong>Download</strong> the visuals if you wish</li>
       </ol>
     ")
           )
@@ -264,7 +263,7 @@ dummy1 <-
   Metric = c("Crop value",
              "Direct costs",
              "Environmental impact",
-             "Health and safety",
+             "Human health and safety",
              "Time/management",
              "Third party coordination requirements"),
   Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
@@ -279,7 +278,7 @@ dummy2 <-
     Metric = c("Crop value",
                "Direct costs",
                "Environmental impact",
-               "Health and safety",
+               "Human health and safety",
                "Time/management",
                "Third party coordination requirements"),
     Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
@@ -292,10 +291,10 @@ server <- function(input, output, session) {
   
   output$download_questionnaire <- downloadHandler(
     filename = function() {
-      "questionnaire.pdf"
+      "Category-descriptions.pdf"
     },
     content = function(file) {
-      file.copy("www/questionnaire.pdf", file)
+      file.copy("www/Category-descriptions.pdf", file)
     }
   )
   
@@ -315,7 +314,7 @@ server <- function(input, output, session) {
         Metric = c("Crop value", 
                    "Direct costs", 
                    "Environmental impact",
-                   "User health and safety",
+                   "Human health and safety",
                    "Time/management", 
                    "Third party coordination requirements"),
         Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
@@ -402,7 +401,7 @@ server <- function(input, output, session) {
         Metric = c("Crop value", 
                    "Direct costs", 
                    "Environmental impact",
-                   "User health and safety",
+                   "Human health and safety",
                    "Time/management", 
                    "Third party coordination requirements"),
         Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
