@@ -261,7 +261,7 @@ ui <- shinydashboard::dashboardPage(
 dummy1 <-
   data.frame(
   PackageTitle = rep("TEST", 6),
-  Metric = c("Crop losses",
+  Metric = c("Crop value",
              "Direct costs",
              "Environmental impact",
              "Health and safety",
@@ -276,7 +276,7 @@ dummy1 <-
 dummy2 <-
   data.frame(
     PackageTitle = rep("TEST2", 6),
-    Metric = c("Crop losses",
+    Metric = c("Crop value",
                "Direct costs",
                "Environmental impact",
                "Health and safety",
@@ -312,7 +312,7 @@ server <- function(input, output, session) {
     if (is.null(values1$data)) {
       values1$data <- data.frame( 
         PackageTitle = rep("", 6),
-        Metric = c("Crop losses", 
+        Metric = c("Crop value", 
                    "Direct costs", 
                    "Environmental impact",
                    "User health and safety",
@@ -399,7 +399,7 @@ server <- function(input, output, session) {
     if (is.null(values2$data)) {
       values2$data <- data.frame( 
         PackageTitle = rep("", 6),
-        Metric = c("Crop losses", 
+        Metric = c("Crop value", 
                    "Direct costs", 
                    "Environmental impact",
                    "User health and safety",
@@ -609,10 +609,11 @@ server <- function(input, output, session) {
   # Render the util boxes
   output$pkg1_utility <- renderValueBox({
   
+    req(values1$data)
     req(util1_to_display)
       valueBox(
         value = format(util1_to_display(), digits = 2, nsmall = 0),
-        subtitle = "Package 1 Utility",
+        subtitle = paste(values1$data$PackageTitle[1], "Utility"),
         icon = icon("hammer"),
         color = "yellow"
       )
@@ -620,10 +621,11 @@ server <- function(input, output, session) {
   
   output$pkg2_utility <- renderValueBox({
     
+    req(values2$data)
     req(util2_to_display)
     valueBox(
       value = format(util2_to_display(), digits = 2, nsmall = 0),
-      subtitle = "Package 2 Utility",
+      subtitle = paste(values2$data$PackageTitle[1], "Utility"),
       icon = icon("wrench"),
       color = "green"
     )
@@ -631,10 +633,11 @@ server <- function(input, output, session) {
   # Render the util boxes
   output$pkg1_confidence <- renderValueBox({
     
+    req(values1$data)
     req(conf1_to_display)
     valueBox(
       value = conf1_to_display(),
-      subtitle = "Package 1 Utility Confidence",
+      subtitle = paste(values1$data$PackageTitle[1], "Utility Confidence"),
       icon = icon("gauge-simple-high"),
       color = "yellow"
     )
@@ -642,10 +645,11 @@ server <- function(input, output, session) {
   
   output$pkg2_confidence <- renderValueBox({
     
+    req(values2$data)
     req(conf2_to_display)
     valueBox(
       value = conf2_to_display(), 
-      subtitle = "Package 2 Utility Confidence",
+      subtitle = paste(values2$data$PackageTitle[1], "Utility Confidence"),
       icon = icon("gauge-simple"),
       color = "green"
     )
