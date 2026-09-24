@@ -14,7 +14,8 @@ d2 <-
   tidyr::fill(title) |>
   dplyr::mutate(weight = as.numeric(weight),
                 rating_numeric = rating_1to5) |>
-  dplyr::select(-rating_1to5)
+  dplyr::select(-rating_1to5) |> 
+  dplyr::mutate(rating_numeric = as.numeric(rating_numeric))
 
 #--change to confidence_text
 d3 <- 
@@ -29,10 +30,11 @@ d3 <-
 
 
 #--change 'crop losses' to 'crop value'
+#--change 'User health and safety' to 'Human health and safety'
 d4 <- 
   d3 |> 
   mutate(across(everything(), ~ str_replace_all(.x, "Crop losses", "Crop value"))) |> 
-  mutate(across(everything(), ~ str_replace_all(.x, "User health and safety", "Human health")))
+  mutate(across(everything(), ~ str_replace_all(.x, "User health and safety", "Human health and safety")))
   
 
 data_example <- d4

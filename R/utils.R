@@ -602,7 +602,7 @@ fxn_Make_Paired_Ridge_Plots <- function(data = data_example,
       "Time/management\ncomplexity",
       "Immediate usability",
       "Environmental impact",
-      "User health and safety"
+      "Human health and safety"
     )
   
   #--get names of approaches
@@ -823,7 +823,7 @@ fxn_Make_Overlapping_Ridge_Plots <- function(data = data_example, betas = data_b
       "Time/management",
       "Immediate usability",
       "Environmental impact",
-      "User health and safety"
+      "Human health and safety"
     )
   
   

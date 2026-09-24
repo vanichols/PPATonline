@@ -82,7 +82,7 @@ d5 <-
 
 data_betas <- 
   d5 |> 
-  select(rating_numeric, confidence_text, value_bin, score)
+  select(rating_numeric, confidence_text, value_bin, score) 
 
 data_betas |> 
   write_rds("data/processed/data_betas.RDS")

@@ -15,7 +15,7 @@ library(patchwork)
 
 data_betas <- read_rds("data/processed/data_betas.RDS")
 data_example <- read_rds("data/processed/data_example.RDS")
-data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
+#data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
 
 # Source utility functions (results plots)
 source("R/utils.R")
@@ -257,35 +257,35 @@ ui <- shinydashboard::dashboardPage(
 
 # server ------------------------------------------------------------------
 
-dummy1 <-
-  data.frame(
-  PackageTitle = rep("TEST", 6),
-  Metric = c("Crop value",
-             "Direct costs",
-             "Environmental impact",
-             "Human health and safety",
-             "Time/management",
-             "Third party coordination requirements"),
-  Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
-  Rating = rep("1 star - Not acceptable", 6),
-  Confidence = rep("Medium", 6),
-  stringsAsFactors = FALSE
-)
-
-dummy2 <-
-  data.frame(
-    PackageTitle = rep("TEST2", 6),
-    Metric = c("Crop value",
-               "Direct costs",
-               "Environmental impact",
-               "Human health and safety",
-               "Time/management",
-               "Third party coordination requirements"),
-    Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
-    Rating = rep("4 stars - Acceptable", 6),
-    Confidence = rep("Very high", 6),
-    stringsAsFactors = FALSE
-  )
+# dummy1 <-
+#   data.frame(
+#   PackageTitle = rep("TEST", 6),
+#   Metric = c("Crop value",
+#              "Direct costs",
+#              "Environmental impact",
+#              "Human health and safety",
+#              "Time/management",
+#              "Third party coordination requirements"),
+#   Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
+#   Rating = rep("1 star - Not acceptable", 6),
+#   Confidence = rep("Medium", 6),
+#   stringsAsFactors = FALSE
+# )
+# 
+# dummy2 <-
+#   data.frame(
+#     PackageTitle = rep("TEST2", 6),
+#     Metric = c("Crop value",
+#                "Direct costs",
+#                "Environmental impact",
+#                "Human health and safety",
+#                "Time/management",
+#                "Third party coordination requirements"),
+#     Weight = c(50, 12.5, 12.5, 12.5, 6.25, 6.25),
+#     Rating = rep("4 stars - Acceptable", 6),
+#     Confidence = rep("Very high", 6),
+#     stringsAsFactors = FALSE
+#   )
 
 server <- function(input, output, session) {
   
