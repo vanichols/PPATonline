@@ -665,18 +665,52 @@ server <- function(input, output, session) {
     content = function(file) {
       req(plot1_to_display()) 
       
-      p <- plot1_to_display()
+      # Get both plots
+      p1 <- plot1_to_display()
+      p2 <- plot2_to_display()  # Add your second plot reactive here
       
-      #--Explicitly add a white background
-      p <- p + theme(
-        plot.background = element_rect(fill = "white", color = NA),
-        panel.background = element_rect(fill = "white", color = NA)
+      # Create valueBox as a plot
+      vb_plot1 <- fxn_create_valuebox_plot(
+        value = util1_to_display(),
+        subtitle = paste(values1$data$PackageTitle[1], "Utility")
       )
+      
+      # Create valueBox as a plot
+      conf_plot1 <- fxn_create_valuebox_plot(
+        value = conf2_to_display(),
+        subtitle = paste(values1$data$PackageTitle[1], "Utility Confidence")
+      )
+      
+      # Create valueBox as a plot
+      vb_plot2 <- fxn_create_valuebox_plot2(
+        value = util2_to_display(),
+        subtitle = paste(values2$data$PackageTitle[1], "Utility")
+      )
+      
+      # Create valueBox as a plot
+      conf_plot2 <- fxn_create_valuebox_plot2(
+        value = conf2_to_display(),
+        subtitle = paste(values2$data$PackageTitle[1], "Utility Confidence")
+      )
+      
+      sub1 <- vb_plot1/conf_plot1
+      sub2 <- vb_plot2/conf_plot2
+      
+      # Combine all plots
+      combined_plot <- p1 / (sub1 | p2 | sub2)
+      
+      
+      # Explicitly add a white background
+      combined_plot <- combined_plot + 
+        theme(
+          plot.background = element_rect(fill = "white", color = NA),
+          panel.background = element_rect(fill = "white", color = NA)
+        )
       
       # Save the plot
       ggsave(
         file,
-        plot = p,
+        plot = combined_plot,
         device = "png",
         width = 15,
         height = 8,

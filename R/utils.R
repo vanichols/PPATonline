@@ -97,7 +97,7 @@ fxn_Make_Plots <- function(data = data_example,
     ggplot2::scale_fill_manual(values = clr1) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
-      limits = c(1, 5),
+      limits = c(0, 6),
       labels = c("Unacceptable",
                  "Disuaded",
                  "Is a consideration",
@@ -155,6 +155,7 @@ fxn_Make_Plots <- function(data = data_example,
     ggplot2::scale_fill_manual(values = clr2) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
+      limits = c(0, 6),
       labels = c("Unacceptable",
                  "Disuaded",
                  "Is a consideration",
@@ -215,6 +216,7 @@ fxn_Make_Plots <- function(data = data_example,
     ) +
     ggplot2::scale_x_continuous(
       breaks = c(1, 2, 3, 4, 5),
+      limits = c(0, 6),
       labels = c("Unacceptable",
                  "Disuaded",
                  "Is a consideration",
@@ -554,360 +556,32 @@ fxn_Make_Overall_Utility_Fig <- function(data_utility = data_example_utility,
 
 
 
-#' Create a ridge plot of the six metrics for a given strategy
-#'
-#' @param data The questionaire data template, filled in.
-#' @param betas A dataset defining the beta distributions for confidence levels.
-#' @returns A plot
-#' @import ggplot2
-#' @import dplyr
-#' @import tidyr
-#' @import forcats
-#' @import ggridges
-#' @import patchwork
-#' @export
 
 
-fxn_Make_Paired_Ridge_Plots <- function(data = data_example,
-                                        betas = data_betas) {
-  # 
-  # metric_colors <- c(
-  #   "Crop value" =  "#c2e699",
-  #   "Costs" = "#ffffcc",
-  #   "Time/management\ncomplexity" = "#fa9fb5",
-  #   "Immediate usability" = "#fdbe85",
-  #   "Environmental impact" = "#c51b8a",
-  #   "User health and safety" = "#6baed6"
-  # )
-  # 
-  
-  metric_colors <- c(
-    "Crop value" =  "#c2e699",
-    "Costs" = "#fd8d3c",
-    "Time/management\ncomplexity" = "#fa9fb5",
-    "Immediate usability" = "#fdbe85",
-    "Environmental impact" = "#c51b8a",
-    "User health and safety" = "#6baed6"
-  )
-  
-  metric_names <-
-    data |>
-    dplyr::pull(metric) |>
-    unique()
-  
-  metric_names_nice <-
-    c(
-      "Crop value",
-      "Costs",
-      "Time/management\ncomplexity",
-      "Immediate usability",
-      "Environmental impact",
-      "Human health and safety"
-    )
-  
-  #--get names of approaches
-  strategy_name <-
-    data |>
-    dplyr::pull(title) |>
-    unique()
-  
-  
-  plot_data1 <-
-    data |>
-    dplyr::filter(title == strategy_name[1]) |>
-    #--make metric into a factor
-    dplyr::mutate(
-      metric2 = dplyr::case_when(
-        metric == metric_names[1] ~ metric_names_nice[1],
-        metric == metric_names[2] ~ metric_names_nice[2],
-        metric == metric_names[3] ~ metric_names_nice[3],
-        metric == metric_names[4] ~ metric_names_nice[4],
-        metric == metric_names[5] ~ metric_names_nice[5],
-        metric == metric_names[6] ~ metric_names_nice[6]),
-      metricF = factor(metric2, levels = (metric_names_nice))) |>
-    dplyr::left_join(betas,
-                     by = c("rating_numeric", "confidence_text"),
-                     relationship = "many-to-many") |>
-    #--make some things for the figure
-    dplyr::arrange(metricF) |>
-    dplyr::mutate(
-      #metric_label = paste0(metricF, " (", round(weight, 2), "%)"),
-      metric_label = paste0(metricF),
-      metricF = as.factor(metric_label),
-      metricF = forcats::fct_inorder(metricF)) |>
-    dplyr::mutate(score = as.integer(score)) |>
-    dplyr::select(title, metricF, 
-                  #weight, 
-                  value_bin, score)
-  
-  plot_data2 <-
-    data |>
-    dplyr::filter(title == strategy_name[2]) |>
-    #--make metric into a factor
-    dplyr::mutate(
-      metric2 = dplyr::case_when(
-        metric == metric_names[1] ~ metric_names_nice[1],
-        metric == metric_names[2] ~ metric_names_nice[2],
-        metric == metric_names[3] ~ metric_names_nice[3],
-        metric == metric_names[4] ~ metric_names_nice[4],
-        metric == metric_names[5] ~ metric_names_nice[5],
-        metric == metric_names[6] ~ metric_names_nice[6]),
-      metricF = factor(metric2, levels = (metric_names_nice))) |>
-    #--join with confidence bins - FIXED: added 'by' argument
-    dplyr::left_join(betas,
-                     by = c("rating_numeric", "confidence_text"),
-                     relationship = "many-to-many") |>
-    #--make some things for the figure
-    dplyr::arrange(metricF) |>
-    dplyr::mutate(
-      # metric_label = paste0(metricF, " (", round(weight, 2), "%)"),
-      metric_label = paste0(metricF),
-      metricF = as.factor(metric_label),
-      metricF = forcats::fct_inorder(metricF)) |>
-    dplyr::mutate(score = as.integer(score)) |>
-    dplyr::select(title, metricF, 
-                  #weight, 
-                  value_bin, score)
-  
-  
-  #--ridge plots
-  
-  plot1 <-
-    plot_data1 |>
-    tidyr::uncount(score) |>
-    ggplot2::ggplot() +
-    ggplot2::geom_density(
-      ggplot2::aes(x = value_bin,
-                   fill = metricF),
-      bw = 0.5,
-      show.legend = F
+fxn_create_valuebox_plot <- function(value, subtitle) {
+  ggplot() +
+    annotate("text", x = 0.5, y = 0.6, label = value, 
+             size = 20, fontface = "bold", color = "#ffd74a") +
+    annotate("text", x = 0.5, y = 0.4, label = subtitle, 
+             size = 5, color = "#333333") +
+    theme_void() +
+    theme(
+      plot.background = element_rect(fill = "white", color = NA),
+      panel.background = element_rect(fill = "white", color = NA)
     ) +
-    ggplot2::geom_col(data = plot_data1,
-                      ggplot2::aes(value_bin, score/100),
-                      alpha = 0.5) +
-    ggplot2::facet_wrap(~metricF, labeller = label_wrap_gen(width = 20)) +
-    ggplot2::scale_fill_manual(values = unname(metric_colors)) +
-    ggplot2::scale_x_continuous(
-      breaks = c(1, 2, 3, 4, 5),
-      limits = c(1, 5),
-      labels = c("Unacceptable",
-                 "Disuaded",
-                 "Is a consideration",
-                 "Acceptable",
-                 "Highly acceptable")
-    ) +
-    ggplot2::scale_y_continuous(
-      breaks = c(0, .2, .4, .6, .8, 1),
-      limits = c(0, 1),
-      labels = scales::label_percent(),
-    ) +
-    ggplot2::labs(
-      title = paste(strategy_name[1]),
-      y = NULL,
-      fill = NULL,
-      x = NULL
-    ) +
-    # Theme
-    ggplot2::theme_minimal() +
-    ggplot2::theme(
-      legend.title = element_blank(),
-      legend.position = "top",
-      legend.justification = "center",
-      legend.box = "horizontal",
-      legend.key = element_blank(),
-      legend.box.margin = margin(),
-      legend.margin = margin(),
-      plot.title.position = "plot",
-      plot.caption.position = "plot",
-      plot.caption = element_text(hjust = 0),
-      legend.location = "plot",
-      #--get rid of minor gridlines
-      panel.grid.minor = element_blank(),
-      #--ratings text
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      plot.subtitle = element_text(hjust = 0.5)
-    )
-  
-  plot2 <-
-    plot_data2 |>
-    tidyr::uncount(score) |>
-    ggplot2::ggplot() +
-    ggplot2::geom_density(
-      ggplot2::aes(x = value_bin,
-                   fill = metricF),
-      bw = 0.5,
-      show.legend = F
-    ) +
-    ggplot2::geom_col(data = plot_data2,
-                      ggplot2::aes(value_bin, score/100),
-                      alpha = 0.5) +
-    ggplot2::facet_wrap(~metricF, labeller = ggplot2::label_wrap_gen(width = 20)) +
-    ggplot2::scale_fill_manual(values = unname(metric_colors)) +
-    ggplot2::scale_x_continuous(
-      breaks = c(1, 2, 3, 4, 5),
-      limits = c(1, 5),
-      labels = c("Unacceptable",
-                 "Disuaded",
-                 "Is a consideration",
-                 "Acceptable",
-                 "Highly acceptable")
-    ) +
-    ggplot2::scale_y_continuous(
-      breaks = c(0, .2, .4, .6, .8, 1),
-      limits = c(0, 1),
-      labels = scales::label_percent(),
-    ) +
-    ggplot2::labs(
-      title = paste(strategy_name[2]),
-      y = NULL,
-      fill = NULL,
-      x = NULL
-    ) +
-    # Theme
-    ggplot2::theme_minimal() +
-    ggplot2::theme(
-      legend.title = element_blank(),
-      legend.position = "top",
-      legend.justification = "center",
-      legend.box = "horizontal",
-      legend.key = element_blank(),
-      legend.box.margin = margin(),
-      legend.margin = margin(),
-      plot.title.position = "plot",
-      plot.caption.position = "plot",
-      plot.caption = element_text(hjust = 0),
-      legend.location = "plot",
-      #--get rid of minor gridlines
-      panel.grid.minor = element_blank(),
-      #--ratings text
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      plot.subtitle = element_text(hjust = 0.5)
-    )
-  
-  patchwork::wrap_plots(plot1, plot2, ncol = 2)
-  
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1))
 }
 
-
-#' Create overlapping ridge plots of the six metrics, comparing each strategy
-#'
-#' @param data The questionaire data template, filled in.
-#' @param betas A dataset defining the beta distributions for confidence levels.
-#' @returns A plot
-#' @import ggplot2
-#' @import stringr
-#' @import ggridges
-#' @import dplyr
-#' @import tidyr
-#' @import patchwork
-#' @export
-
-
-fxn_Make_Overlapping_Ridge_Plots <- function(data = data_example, betas = data_betas) {
-  
-  metric_colors6 <- c(
-    "Crop value" =  "#c2e699",
-    "Costs" = "#fd8d3c",
-    "Time/management" = "#f768a1",
-    "Immediate usability" = "#fdbe85",
-    "Environmental impact" = "#7a0177",
-    "User health and safety" = "#6baed6"
-  )
-  
-  metric_names6 <-
-    c(
-      "Crop value",
-      "Costs",
-      "Time/management",
-      "Immediate usability",
-      "Environmental impact",
-      "Human health and safety"
-    )
-  
-  
-  #--get names of approaches
-  strategy_names <-
-    data |>
-    dplyr::select(title) |>
-    dplyr::distinct()
-  
-  
-  plot_data <-
-    data |>
-    dplyr::mutate(
-      metric = c(metric_names6, metric_names6),
-      metricF = factor(metric, levels = rev(metric_names6))
-    ) |>
-    dplyr::left_join(betas,
-                     by = c("rating_numeric", "confidence"),
-                     relationship = "many-to-many") |>
-    dplyr::select(title, metricF, value_bin, score)
-  
-  #--ridge plot
-  
-  p1 <- 
-    plot_data |>
-    dplyr::mutate(score = as.integer(score)) |>
-    tidyr::uncount(score) |>
-    ggplot2::ggplot(ggplot2::aes(x = value_bin, y = metricF)) +
-    ggridges::geom_density_ridges2(
-      ggplot2::aes(fill = title),
-      alpha = 0.6,
-      bandwidth = 0.5,
-      scale = 0.9 #--height of distributions
+fxn_create_valuebox_plot2 <- function(value, subtitle) {
+  ggplot() +
+    annotate("text", x = 0.5, y = 0.6, label = value, 
+             size = 20, fontface = "bold", color = "#3faf4a") +
+    annotate("text", x = 0.5, y = 0.4, label = subtitle, 
+             size = 5, color = "#333333") +
+    theme_void() +
+    theme(
+      plot.background = element_rect(fill = "white", color = NA),
+      panel.background = element_rect(fill = "white", color = NA)
     ) +
-    ggplot2::scale_fill_manual(
-      values = c("gray10", "#ffffcc"),
-      #values = c("#fdbe85", "#08519c"),
-      guide = guide_legend(ncol = 2)
-    ) +
-    ggplot2::scale_x_continuous(
-      breaks = c(1, 2, 3, 4, 5),
-      limits = c(1, 5),
-      labels = c(
-        "Unacceptable",
-        "Disuaded",
-        "Is a consideration",
-        "Acceptable",
-        "Highly acceptable"
-      )
-    ) +
-    ggplot2::labs(
-      title = "Performance",
-      y = NULL,
-      fill = NULL,
-      x = NULL
-    ) +
-    # Theme
-    ggplot2::theme_minimal() +
-    ggplot2::theme(
-      legend.title = element_blank(),
-      legend.position = "top",
-      legend.justification = "center",
-      legend.box = "horizontal",
-      legend.key = element_blank(),
-      legend.box.margin = margin(),
-      legend.margin = margin(),
-      plot.title.position = "plot",
-      plot.caption.position = "plot",
-      plot.caption = element_text(hjust = 0),
-      legend.location = "plot",
-      #--get rid of minor gridlines
-      panel.grid.minor = element_blank(),
-      #--ratings text
-      axis.text.x = element_text(
-        angle = 45,
-        hjust = 1,
-        vjust = 1
-      ),
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      plot.subtitle = element_text(hjust = 0.5)
-    )
-  
-  (plot_spacer()|p1|plot_spacer()) +
-    plot_layout(widths = c(1, 0.5, 1))
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1))
 }
-
-
