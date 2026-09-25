@@ -72,8 +72,13 @@ data_adrianbetas <- d8
 data_adrianbetas |> 
   write_rds("data/processed/data_adrianbetas.RDS")
 
-
+#--for ai
 data_adrianbetas |> 
+  select(rating_numeric, confidence_numeric, alpha, beta) |> 
+  write_csv("data/raw/Adrians betas for AI.csv")
+
+
+data_adrianbetas |> data_adrianbetas |> beta
   ggplot(aes(confidence_numeric, beta)) +
   geom_point(aes(color = as.factor(rating_numeric)))
 
