@@ -277,6 +277,13 @@ fxn_Make_Plots <- function(data = data_example,
 fxn_Calc_Overall_Utility <- function(data = data_example,
                                  betas = data_betas,
                                  nsim = 10000) {
+  
+  #--make sure data has things that are numeric
+  data <- 
+    data |> 
+    mutate(rating_numeric = as.numeric(rating_numeric),
+           weight = as.numeric(weight))
+  
   #-- vector of strategies
   v.strat <-
     data |>

@@ -511,31 +511,7 @@ server <- function(input, output, session) {
   })
   
 
-  # # Create a reactive value to store the plot
-  # plot_to_display <- reactiveVal(NULL)
-  # 
-  # observeEvent(input$create_plots_btn, {
-  #   showNotification("Creating figure...", type = "message")
-  #   
-  #   plotdata <- 
-  #     values1$data |>
-  #     bind_rows(values2$data) |>
-  #     mutate(rating_numeric = as.numeric(str_sub(Rating, 1, 1))) |> 
-  #     rename(title = PackageTitle,
-  #            metric = Metric,
-  #            weight = Weight,
-  #            confidence_text = Confidence)
-  #   
-  #   # Generate the plot and store it in the reactive value
-  #   generated_plot <- fxn_Make_Plots(data = plotdata, betas = data_betas)
-  #   plot_to_display(generated_plot)
-  #   
-  #   # Show the value boxes
-  #   shinyjs::show("value_boxes_container")
-  #   
-  #   showNotification("Figure created!", type = "message", duration = 3)
-  # })
-  
+
   # Create reactive values to store both plots
   plot1_to_display <- reactiveVal(NULL)
   plot2_to_display <- reactiveVal(NULL)
