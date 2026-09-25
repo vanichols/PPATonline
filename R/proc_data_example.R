@@ -37,7 +37,10 @@ d4 <-
   mutate(across(everything(), ~ str_replace_all(.x, "User health and safety", "Human health and safety")))
   
 
-data_example <- d4
+data_example <- 
+  d4 |> 
+  mutate(weight = as.numeric(weight),
+         rating_numeric = as.numeric(rating_numeric))
 
 data_example |> 
   saveRDS("data/processed/data_example.RDS")
