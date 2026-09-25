@@ -14,11 +14,13 @@ library(patchwork)
 # global ------------------------------------------------------------------
 
 data_betas <- read_rds("data/processed/data_betas.RDS")
+data_adrianbetas <- read_rds("data/processed/data_adrianbetas.RDS")
 data_example <- read_rds("data/processed/data_example.RDS")
 #data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
 
 # Source utility functions (results plots)
 source("R/utils.R")
+source("R/utils2.R")
 
 # ui ----------------------------------------------------------------------
 ui <- shinydashboard::dashboardPage(
@@ -540,11 +542,12 @@ server <- function(input, output, session) {
              confidence_text = Confidence)
     
     
-    theutility <- fxn_Calc_Overall_Utility(data = plotdata, nsim = 1000)
+    #theutility <- fxn_Calc_Overall_Utility(data = plotdata, nsim = 1000)
+    theutility <- fxn_Calc_Overall_Utility_New(data = plotdata)
     
     # Generate both plots and store them in the reactive values
     generated_plot1 <- fxn_Make_Plots(data = plotdata, betas = data_betas)
-    generated_plot2 <- fxn_Make_Overall_Utility_Fig(data = theutility, betas = data_betas)
+    generated_plot2 <- fxn_Make_Overall_Utility_Fig_New(data_utility = theutility)
     
     plot1_to_display(generated_plot1)
     plot2_to_display(generated_plot2)
