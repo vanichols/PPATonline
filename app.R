@@ -15,9 +15,9 @@ library(patchwork)
 
 data_betas <- read_rds("data/processed/data_betas.RDS")
 data_betas_interpolated <- read_rds("data/processed/data_betas_interpolated.RDS")
-data_example <- read_rds("data/processed/data_example.RDS")
-data_example_utility_new <- read_rds("data/processed/data_example_utility_new.RDS")
-data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
+# data_example <- read_rds("data/processed/data_example.RDS")
+# data_example_utility_new <- read_rds("data/processed/data_example_utility_new.RDS")
+# data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
 
 # Source utility functions (results plots)
 source("R/utils.R")
@@ -350,7 +350,7 @@ server <- function(input, output, session) {
         ) %>%
         hot_col(
           "Weight",
-          readOnly = TRUE,  
+          readOnly = FALSE,  
           type = "numeric", 
           format = "0.00"
         ) %>%
@@ -437,7 +437,7 @@ server <- function(input, output, session) {
         ) %>%
         hot_col(
           "Weight",
-          readOnly = TRUE,  
+          readOnly = FALSE,  
           type = "numeric", 
           format = "0.00"
         ) %>%
