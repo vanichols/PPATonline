@@ -212,7 +212,8 @@ d_orig |>
 
 # 5. write new interpolated dataframe -------------------------------------
 
-data_betas_interpolated <- d_res2
+data_betas_interpolated <- 
+  d_res2 
 
 data_betas_interpolated |> 
   write_rds("data/processed/data_betas_interpolated.RDS")

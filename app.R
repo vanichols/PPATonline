@@ -14,13 +14,15 @@ library(patchwork)
 # global ------------------------------------------------------------------
 
 data_betas <- read_rds("data/processed/data_betas.RDS")
-data_adrianbetas <- read_rds("data/processed/data_adrianbetas.RDS")
+data_betas_interpolated <- read_rds("data/processed/data_betas_interpolated.RDS")
 data_example <- read_rds("data/processed/data_example.RDS")
-#data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
+data_example_utility_new <- read_rds("data/processed/data_example_utility_new.RDS")
+data_example_utility <- read_rds("data/processed/data_example_utility.RDS")
 
 # Source utility functions (results plots)
 source("R/utils.R")
-source("R/utils2.R")
+
+#--need to update with new funcitons!!
 
 # ui ----------------------------------------------------------------------
 ui <- shinydashboard::dashboardPage(
@@ -547,7 +549,8 @@ server <- function(input, output, session) {
     
     # Generate both plots and store them in the reactive values
     generated_plot1 <- fxn_Make_Plots(data = plotdata, betas = data_betas)
-    generated_plot2 <- fxn_Make_Overall_Utility_Fig_New(data_utility = theutility)
+    generated_plot2 <- fxn_Make_Overall_Utility_Fig_New(data_utility = theutility, 
+                                                        betas = data_betas_interpolated)
     
     plot1_to_display(generated_plot1)
     plot2_to_display(generated_plot2)
@@ -656,7 +659,7 @@ server <- function(input, output, session) {
       
       # Create valueBox as a plot
       conf_plot1 <- fxn_create_valuebox_plot(
-        value = conf2_to_display(),
+        value = conf1_to_display(),
         subtitle = paste(values1$data$PackageTitle[1], "Utility Confidence")
       )
       
