@@ -318,6 +318,11 @@ fxn_Calc_Overall_Utility_New <- function(data) {
 fxn_Make_Overall_Utility_Fig_New <- function(data_utility,
                                  betas) {
   
+  #data_utility <- data_example_utility_new
+  betas <- data_betas_interpolated
+  
+  data_utility <- data_utility |> mutate(confidence_numeric = round(confidence_numeric))
+  
   betas2 <- 
     betas |> 
     mutate(rating_numeric = round(rating_numeric, 1),
