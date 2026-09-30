@@ -260,6 +260,9 @@ fxn_Make_Plots <- function(data = data_example, betas = data_betas) {
 
 fxn_Calc_Overall_Utility_New <- function(data) {
   
+  
+  #data <- data_example
+  
   #--get a weighted average of the rating and confidence
   #--first add a confidence_numeric column
   d1 <-
@@ -293,8 +296,7 @@ fxn_Calc_Overall_Utility_New <- function(data) {
   d.res <-
     d3 |> 
     mutate(metric = "Weighted combo") |> 
-    select(title, metric, everything()) |> 
-    select(-conf_round)
+    select(title, metric, everything()) 
   
   return(d.res)
   
