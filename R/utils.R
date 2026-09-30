@@ -260,6 +260,9 @@ fxn_Make_Plots <- function(data = data_example, betas = data_betas) {
 
 fxn_Calc_Overall_Utility_New <- function(data) {
   
+  
+  #data <- data_example
+  
   #--get a weighted average of the rating and confidence
   #--first add a confidence_numeric column
   d1 <-
@@ -274,6 +277,7 @@ fxn_Calc_Overall_Utility_New <- function(data) {
   #--take the weighted average, round to the tenth digit place, or zero to assign conf text
   d2 <-
     d1 |> 
+    mutate(title = fct_inorder(title)) |>
     group_by(title) |> 
     summarise(utility = round(weighted.mean(rating_numeric, weight), 1), 
               confidence_numeric = round(weighted.mean(confidence_numeric, weight), 1),
@@ -293,8 +297,7 @@ fxn_Calc_Overall_Utility_New <- function(data) {
   d.res <-
     d3 |> 
     mutate(metric = "Weighted combo") |> 
-    select(title, metric, everything()) |> 
-    select(-conf_round)
+    select(title, metric, everything()) 
   
   return(d.res)
   
@@ -315,6 +318,14 @@ fxn_Calc_Overall_Utility_New <- function(data) {
 
 fxn_Make_Overall_Utility_Fig_New <- function(data_utility,
                                  betas) {
+  
+  #data_utility <- data_example_utility_new
+  #betas <- data_betas_interpolated
+  
+  data_utility <- 
+    data_utility |> 
+    mutate(confidence_numeric = round(confidence_numeric)) |> 
+    mutate(title = fct_inorder(title))
   
   betas2 <- 
     betas |> 
