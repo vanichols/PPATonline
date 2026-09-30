@@ -320,7 +320,7 @@ fxn_Make_Overall_Utility_Fig_New <- function(data_utility,
                                  betas) {
   
   #data_utility <- data_example_utility_new
-  betas <- data_betas_interpolated
+  #betas <- data_betas_interpolated
   
   data_utility <- 
     data_utility |> 
