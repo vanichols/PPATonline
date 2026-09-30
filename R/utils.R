@@ -277,6 +277,7 @@ fxn_Calc_Overall_Utility_New <- function(data) {
   #--take the weighted average, round to the tenth digit place, or zero to assign conf text
   d2 <-
     d1 |> 
+    mutate(title = fct_inorder(title)) |>
     group_by(title) |> 
     summarise(utility = round(weighted.mean(rating_numeric, weight), 1), 
               confidence_numeric = round(weighted.mean(confidence_numeric, weight), 1),
@@ -321,7 +322,10 @@ fxn_Make_Overall_Utility_Fig_New <- function(data_utility,
   #data_utility <- data_example_utility_new
   betas <- data_betas_interpolated
   
-  data_utility <- data_utility |> mutate(confidence_numeric = round(confidence_numeric))
+  data_utility <- 
+    data_utility |> 
+    mutate(confidence_numeric = round(confidence_numeric)) |> 
+    mutate(title = fct_inorder(title))
   
   betas2 <- 
     betas |> 
