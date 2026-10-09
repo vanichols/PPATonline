@@ -556,8 +556,8 @@ server <- function(input, output, session) {
     plot2_to_display(generated_plot2)
     
     # Get values and store them in the reactive values
-    util1 <- round(theutility$utility[1], 2)
-    util2 <- round(theutility$utility[2], 2)
+    util1 <- round(theutility$utility[1]/5*100, 0)
+    util2 <- round(theutility$utility[2]/5*100, 0)
     
     conf1 <- theutility$conf[1]
     conf2 <- theutility$conf[2]
@@ -593,8 +593,8 @@ server <- function(input, output, session) {
     req(values1$data)
     req(util1_to_display)
       valueBox(
-        value = format(util1_to_display(), digits = 2, nsmall = 0),
-        subtitle = paste(values1$data$PackageTitle[1], "Utility"),
+        value = paste0(format(util1_to_display(), digits = 2, nsmall = 0), "%"),
+        subtitle = paste(values1$data$PackageTitle[1], "Utility (0-100%)"),
         icon = icon("hammer"),
         color = "yellow"
       )
@@ -605,8 +605,8 @@ server <- function(input, output, session) {
     req(values2$data)
     req(util2_to_display)
     valueBox(
-      value = format(util2_to_display(), digits = 2, nsmall = 0),
-      subtitle = paste(values2$data$PackageTitle[1], "Utility"),
+      value = paste0(format(util2_to_display(), digits = 2, nsmall = 0), "%"),
+      subtitle = paste(values2$data$PackageTitle[1], "Utility (0-100%)"),
       icon = icon("wrench"),
       color = "green"
     )
